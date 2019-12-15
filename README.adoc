@@ -1,0 +1,152 @@
+= Catalog Export
+:sectnums:
+:sectnumlevels: 2
+:icons: font
+:nofooter:
+:zeenea-cmd: catalog-export
+:zeenea-cli: Catalog Export
+:datacatalog: Zeenea Data Catalog
+:project-name: zeenea-sg
+:version: XX.XX
+:java-version: 1.8
+
+
+Ce projet contient une application en ligne de commande qui permet d'exporter le catalogue Zeenea dans un fichier Excel.
+
+Le fichier produit contient trois feuilles, une par type d'asset exporté:
+
+. les catégories,
+. les datasets,
+. les champs (_fields_).
+
+== Utilisation
+
+L'exécutable à utiliser se nomme `{zeenea-cmd}`.
+Il est contenu sous-dossier `bin` du dossier d'installation.
+Il est donc souhaitable d'ajouter ce dernier dans le `PATH` de l'utilisateur.
+
+La documentation de l'export est facilement accessible en appelant le programme avec l'option `-h` ou `--help`.
+
+[source,bash,subs="attributes"]
+----
+$ {zeenea-cmd} --help
+Usage: {zeenea-cmd} [options]
+  Options:
+    -h, --help
+      Display help message
+    -o, --output
+      Output file path
+      Default: zeenea-datasets.xlsx
+    -f, --force, --override
+      Override existing file
+      Default: false
+  * -p, --password
+      Zeenea user's password
+  * --url
+      Zeenea URL base
+  * -u, --user
+      Zeenea user
+----
+
+=== Options
+
+-h, --help:: Affiche l'aide de la commande.
+--url:: Url d'accès à Zeenea. Exemple: `+https://zeenea.exemple.com:8080/+`.
+-u, --user:: Utilisateur Zeenea au compte duquel l'export est effectué.
+-p, --password:: Mot de passe de l'utilisateur. +
+En mode interactif, il est possible de préciser cette option sans le contenu, votre mot de passe sera demandé sur la console sans qu'il s'affiche à l'écran.
+C'est le mode le plus simple pour le protéger.
+-o, --output:: Chemin vers le fichier d'export. +
+Par défaut, la valeur est _zeenea-datasets.xlsx_.
+-f, --force, --override:: Force l'export quand le fichier d'export existe déjà.
+Le contenu du fichier existant est supprimé.
+
+=== Exemple d'utilisation
+
+[source,bash,subs="attributes"]
+----
+$ bin/{zeenea-cmd} --url http://localhost:8080/ -u zeenea -p
+Zeenea user's password:
+INFO  1 category expected
+INFO  1 category found
+INFO  500 dataset expected
+INFO  500 dataset found
+INFO  2500 field expected
+INFO  2500 field found
+INFO  Write result to zeenea-datasets.xlsx
+----
+
+== Compilation
+
+Le projet est écrit en java 8 et géré par Gradle.
+
+Pour construire l'exécutable, il suffit de passer la commande `./gradlew build` à la racine du projet.
+
+[source,bash,subs="attributes"]
+----
+$ ./gradlew build
+
+> Task :compileJava
+Note: /Users/jmainaud/src/caa/{zeenea-cmd}/src/main/java/com/zeenea/caa/ExportCatalog.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+BUILD SUCCESSFUL in 4s
+6 actionable tasks: 6 executed
+----
+
+Le livrable prêt à installer est présent dans le dossier build/distributions.
+Deux fichiers sont disponibles:
+
+* {zeenea-cmd}-{version}.tar
+* {zeenea-cmd}-{version}.zip
+
+== Installation
+
+L'installation consiste à décompresser le fichier produit par la compilation.
+
+[source,bash,subs="attributes"]
+----
+$ tar xf {zeenea-cmd}-{version}.tar
+----
+
+ou
+
+[source,bash,subs="attributes"]
+----
+$ unzip xf {zeenea-cmd}-{version}.zip
+----
+
+On obtient un dossier {zeenea-cmd}-{version}.
+
+
+== Organisation du code
+
+Le code s'organise autour de deux packages:
+
+com.zeenea.export:: Contient le programme d'export proprement dit.
+com.zeenea.export.xlsx:: Contient des classes qui facilitent l'export vers Excel.
+
+La classe principale est `ExportCatalog` dont la méthode `main`:
+
+. analyze les arguments de la ligne de commande,
+. se connecte à Zeenea,
+. construit l'objet d'export et déclenche l'export en appelant la méthode `exportCatalog()`.
+
+
+=== Dépendances
+Pour fonctionner correctement, le programme utilise des bibliothèques tierces.
+
+Les dépendences principales sont les suivantes:
+
+jCommander:: http://jcommander.org[JCommander] est une bibliothèque qui permet d'analyser facilement les arguments de la ligne de commande.
+POI:: https://poi.apache.org[POI] est une bibliothèque Java fournie par Apache qui permet de manipuler des fichiers Excel.
+Zeenea Java SDK:: Ceci est une bibliothèque Java qui permet de consulter l'API Zeenea. +
+C'est la méthode conseillée pour consommer les API Zeenea depuis un programme Java.
+
+Les autres dépendances utilisées sont listées dans la section `dependencies` du fichier build.gradle.kts.
+
+[NOTE]
+====
+Notez que la bibliothèque Zeenea Java SDK est en cours de développement et que les API qu'elle consomme ne sont pas encore stabilisées.
+En cas de besoin particulier, n'hésitez pas à contacter l'équipe Professional Services à l'adresse support@zeenea.com.
+====
