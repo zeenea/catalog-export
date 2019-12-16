@@ -123,8 +123,8 @@ On obtient un dossier {zeenea-cmd}-{version}.
 
 Le code s'organise autour de deux packages:
 
-com.zeenea.export:: Contient le programme d'export proprement dit.
-com.zeenea.export.xlsx:: Contient des classes qui facilitent l'export vers Excel.
+com.zeenea.cli.export:: Contient le programme d'export proprement dit.
+com.zeenea.cli.export.xlsx:: Contient des classes qui facilitent l'export vers Excel.
 
 La classe principale est `ExportCatalog` dont la méthode `main`:
 
