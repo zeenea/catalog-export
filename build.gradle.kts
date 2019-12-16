@@ -14,14 +14,14 @@ version = file("version.txt").readText().trim()
 plugins {
     java
     application
-    id("org.asciidoctor.jvm.convert") version "2.3.0"
+    id("org.asciidoctor.jvm.convert") version "2.4.0"
 }
 
 repositories {
     jcenter()
     maven {
         name = "zeenea-releases"
-        url = uri("http://zeenea-maven-public.s3.amazonaws.com/")
+        url = uri("https://zeenea-maven-public.s3.amazonaws.com/")
     }
 }
 
@@ -53,7 +53,7 @@ tasks.withType<Tar> {
 }
 
 tasks.getByName<AsciidoctorTask>("asciidoctor") {
-    sources(delegateClosureOf<PatternSet> { include("zeenea-cli.adoc") })
+    sources(delegateClosureOf<PatternSet> { include(project.name + ".adoc") })
     attributes = mapOf("version" to project.version)
 }
 

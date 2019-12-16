@@ -8,7 +8,3 @@
  */
 
 rootProject.name = "catalog-export"
-
-if (file("../zeenea-java-sdk/.composite-enable").exists()) {
-    includeBuild("../zeenea-java-sdk")
-}
